@@ -10,11 +10,12 @@ import SwiftUI
 /**
  An instance of a `SwiftHUD`. A `SwiftHUD` is a simple struct that contains data to construct an overlay view in the `SwiftHUDOverlayModifier` when required.
  */
-struct SwiftHUD {
+@available(iOS 15.0, *)
+public struct SwiftHUD {
     /**
      Each `SwiftHUD` has an accessory. The accessory is displayed as the topmost item of the HUD view.
      */
-    enum Accessory: Equatable {
+    public enum Accessory: Equatable {
              /** `progress` displays an animated `ProgressView` as the accessory. */
         case progress,
              /** `systemImage` displays an SF Symbol` as the accessory. */
@@ -43,7 +44,7 @@ struct SwiftHUD {
      - Parameter dismissAfter: Optional TimeInterval that controls automatic dismissal.
      - Parameter closure: Optional closure that is executed immediately. Dismisses the HUD automatically on completion.
      */
-    init(accessory: Accessory, message: String? = nil, disablesBackground: Bool = true, dismissAfter: TimeInterval? = nil, closure: (() -> Void)? = nil) {
+    public init(accessory: Accessory, message: String? = nil, disablesBackground: Bool = true, dismissAfter: TimeInterval? = nil, closure: (() -> Void)? = nil) {
         self.accessory = accessory
         self._message = .constant(message)
         self.disablesBackground = disablesBackground
@@ -60,7 +61,7 @@ struct SwiftHUD {
      - Parameter dismissAfter: Optional TimeInterval that controls automatic dismissal.
      - Parameter closure: Optional closure that is executed immediately. Dismisses the HUD automatically on completion.
      */
-    init(accessory: Accessory, message: (Binding<String?>)? = nil, disablesBackground: Bool = true, dismissAfter: TimeInterval? = nil, closure: (() -> Void)? = nil) {
+    public init(accessory: Accessory, message: (Binding<String?>)? = nil, disablesBackground: Bool = true, dismissAfter: TimeInterval? = nil, closure: (() -> Void)? = nil) {
         self.accessory = accessory
         self._message = message ?? .constant(nil)
         self.disablesBackground = disablesBackground
@@ -70,7 +71,7 @@ struct SwiftHUD {
 }
 
 extension SwiftHUD: Equatable {
-    static func == (lhs: SwiftHUD, rhs: SwiftHUD) -> Bool {
+    public static func == (lhs: SwiftHUD, rhs: SwiftHUD) -> Bool {
         lhs.accessory == rhs.accessory && lhs.message == rhs.message
     }
 }

@@ -12,15 +12,18 @@ import SwiftUI
  
  To present a singular HUD once from SwiftUI, you should probably just use the `.swiftHUD(...)` view modifier. The Manager is not necessary in this case.
  */
-class SwiftHUDOverlayManager: ObservableObject {
+@available(iOS 15.0, *)
+public class SwiftHUDOverlayManager: ObservableObject {
     /** The shared manager can be used in situations where you need to display a `SwiftHUD` from a very remote location. Where possible, you should use a local manager. */
-    static var shared = SwiftHUDOverlayManager()
+    public static var shared = SwiftHUDOverlayManager()
     
     /** The currently displayed `SwiftHUD`, if no HUD is being displayed, this value is nil. */
-    @Published var overlay: SwiftHUD?
+    @Published public var overlay: SwiftHUD?
+    
+    public init() {}
     
     /** Presents the specified `SwiftHUD` immediately. If this manager is already presenting a HUD, it will be replaced. */
-    func present(overlay: SwiftHUD) {
+    public func present(overlay: SwiftHUD) {
         withAnimation {
             self.overlay = overlay
         }
@@ -36,7 +39,7 @@ class SwiftHUDOverlayManager: ObservableObject {
         
         // If the overlay is set to auto-dismiss, do that after the configured time
         if let dismissAfter = overlay.dismissAfter {
-            delay(dismissAfter) {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(dismissAfter * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
                 if self.overlay == overlay {
                     self.dismiss()
                 }
@@ -45,7 +48,7 @@ class SwiftHUDOverlayManager: ObservableObject {
     }
     
     /** Immediately dismisses the HUD */
-    func dismiss() {
+    public func dismiss() {
         self.overlay = nil
     }
 }
