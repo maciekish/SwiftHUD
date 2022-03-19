@@ -1,6 +1,6 @@
 # SwiftHUD
 
-SwiftHUD is a modern take on the classic HUD, written entirely in Swift and SwiftUI.
+`SwiftHUD` is a modern take on the classic HUD, written entirely in Swift and SwiftUI.
 
 While there are other HUD's made in Swift, i created this one for two reasons.
 
@@ -18,11 +18,11 @@ But first, you have to add the Package Dependency.
 
 ## Adding the Package Dependency
 
-In the Xcode, select File > Add packages. In the top right box labeled `Search or Enter Package URL`, paste the following URL: https://github.com/maciekish/SwiftHUD
+In the Xcode, select `File` > `Add packages`. In the top right box labeled `Search or Enter Package URL`, paste the following URL: https://github.com/maciekish/SwiftHUD
 
 ## Basic, SwiftUI usage
 
-Just set isActive = true to display the HUD.
+Just set `isActive = true` to display the HUD.
 ```swift
 import SwiftHUD
 
@@ -33,7 +33,7 @@ struct YourView: View {
      NavigationView {
         Text("Hello, SwiftHUD")
         .onTapGesture {
-          isActive.toggle()
+          isActive = true
         }
      }
      .swiftHUD(isActive: $isActive, message: "Loading...")
