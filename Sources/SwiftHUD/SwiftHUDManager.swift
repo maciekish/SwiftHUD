@@ -12,7 +12,7 @@ import SwiftUI
  
  To present a singular HUD once from SwiftUI, you should probably just use the `.swiftHUD(...)` view modifier. The Manager is not necessary in this case.
  */
-@available(iOS 15.0, *)
+@available(iOS 15.0, macOS 10.15, *)
 public class SwiftHUDOverlayManager: ObservableObject {
     /** The shared manager can be used in situations where you need to display a `SwiftHUD` from a very remote location. Where possible, you should use a local manager. */
     public static var shared = SwiftHUDOverlayManager()
@@ -24,6 +24,10 @@ public class SwiftHUDOverlayManager: ObservableObject {
     
     /** Presents the specified `SwiftHUD` immediately. If this manager is already presenting a HUD, it will be replaced. */
     public func present(overlay: SwiftHUD) {
+        var overlay = overlay
+        
+        overlay.manager = self
+        
         withAnimation {
             self.overlay = overlay
         }
@@ -56,63 +60,19 @@ public class SwiftHUDOverlayManager: ObservableObject {
 struct SwiftHUDManagedOverlayModifier: ViewModifier {
     @ObservedObject var manager: SwiftHUDOverlayManager
     
-    func body(content: Content) -> some View {
-        if let overlay = manager.overlay {
-            content
-            .swiftHUD(isActive: .constant(true), overlay: overlay)
-        } else {
-            content
-        }
-    }
-}
-
-struct SwiftHUDOverlayModifier: ViewModifier {
-    @Binding var isActive: Bool
-    @Binding var overlay: SwiftHUD
-    
-    init(isActive: Binding<Bool>, overlay: Binding<SwiftHUD>) {
-        self._isActive = isActive
-        self._overlay = overlay
-    }
+    @State var isActive = true
     
     func body(content: Content) -> some View {
-        if isActive {
-            content
-            // Disable all content in the background if requested.
-            .disabled(overlay.disablesBackground)
-            .overlay {
-                ZStack {
-                    // Dim content in background if requested.
-                    if overlay.disablesBackground {
-                        Rectangle()
-                        .foregroundColor(.black)
-                        .opacity(0.33)
-                    }
-                    GroupBox {
-                        VStack(spacing: 10) {
-                            switch overlay.accessory {
-                            case .progress:
-                                ProgressView()
-                            case .systemImage(let name):
-                                Image(systemName: name)
-                            case .image(let image):
-                                image
-                            }
-                            if let message = overlay.message {
-                                Text(message)
-                                .foregroundColor(.secondary)
-                            }
-                        }
-                        .padding(10)
-                    }
-                    .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 0)
-                }
-                // Cover content view entirely
-                .ignoresSafeArea()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        Group {
+            if let overlay = manager.overlay {
+                content
+                    .swiftHUD(isActive: $isActive, overlay: overlay)
+            } else {
+                content
             }
-        } else {
-            content
+        }
+        .onChange(of: manager.overlay) { newOverlay in
+            isActive = newOverlay != nil
         }
     }
 }

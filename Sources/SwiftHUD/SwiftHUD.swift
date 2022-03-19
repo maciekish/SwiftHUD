@@ -10,7 +10,7 @@ import SwiftUI
 /**
  An instance of a `SwiftHUD`. A `SwiftHUD` is a simple struct that contains data to construct an overlay view in the `SwiftHUDOverlayModifier` when required.
  */
-@available(iOS 15.0, *)
+@available(iOS 15.0, macOS 10.15, *)
 public struct SwiftHUD {
     /**
      Each `SwiftHUD` has an accessory. The accessory is displayed as the topmost item of the HUD view.
@@ -30,10 +30,15 @@ public struct SwiftHUD {
     @Binding var message: String?
     /** Controls whether the overlay disableds the content behind it. If true, the content will be `.disabled` and slightly dimmed. */
     var disablesBackground: Bool
+    /** If `true, the HUD can be tapped to dismiss it. */
+    var tapToDismiss: Bool
     /** Optional timer. If set, will dismiss the overlay after the time expires. */
     var dismissAfter: TimeInterval?
     /** Optional closure. If set, will execute itself immediately and dismiss the overlay on completion. */
     var closure: (() -> Void)?
+    
+    /** Internal weak reference to an optional manager, in case the HUD needs to dismiss itself in a managed context. */
+    internal weak var manager: SwiftHUDOverlayManager?
     
     /**
      Creates a new SwiftHUD.
@@ -41,13 +46,15 @@ public struct SwiftHUD {
      - Parameter accessory: Mandatory accessory that is displayed in the topmost position of the HUD.
      - Parameter message: Optional message that is displayed below the accessory.
      - Parameter disablesBackground: If set to `true` will `.disable` the views behind the HUD, and apply a slight dimming effect.
+     - Parameter tapToDismiss: If set to `true`, the HUD can be dismissed by tapping it, or the backgorund.
      - Parameter dismissAfter: Optional TimeInterval that controls automatic dismissal.
      - Parameter closure: Optional closure that is executed immediately. Dismisses the HUD automatically on completion.
      */
-    public init(accessory: Accessory, message: String? = nil, disablesBackground: Bool = true, dismissAfter: TimeInterval? = nil, closure: (() -> Void)? = nil) {
+    public init(accessory: Accessory, message: String? = nil, disablesBackground: Bool = true, tapToDismiss: Bool = false, dismissAfter: TimeInterval? = nil, closure: (() -> Void)? = nil) {
         self.accessory = accessory
         self._message = .constant(message)
         self.disablesBackground = disablesBackground
+        self.tapToDismiss = tapToDismiss
         self.dismissAfter = dismissAfter
         self.closure = closure
     }
@@ -58,13 +65,15 @@ public struct SwiftHUD {
      - Parameter accessory: Mandatory accessory that is displayed in the topmost position of the HUD.
      - Parameter message: Optional message that is displayed below the accessory.
      - Parameter disablesBackground: If set to `true` will `.disable` the views behind the HUD, and apply a slight dimming effect.
+     - Parameter tapToDismiss: If set to `true`, the HUD can be dismissed by tapping it, or the backgorund.
      - Parameter dismissAfter: Optional TimeInterval that controls automatic dismissal.
      - Parameter closure: Optional closure that is executed immediately. Dismisses the HUD automatically on completion.
      */
-    public init(accessory: Accessory, message: (Binding<String?>)? = nil, disablesBackground: Bool = true, dismissAfter: TimeInterval? = nil, closure: (() -> Void)? = nil) {
+    public init(accessory: Accessory, message: (Binding<String?>)? = nil, disablesBackground: Bool = true, tapToDismiss: Bool = false, dismissAfter: TimeInterval? = nil, closure: (() -> Void)? = nil) {
         self.accessory = accessory
         self._message = message ?? .constant(nil)
         self.disablesBackground = disablesBackground
+        self.tapToDismiss = tapToDismiss
         self.dismissAfter = dismissAfter
         self.closure = closure
     }
