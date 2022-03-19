@@ -12,7 +12,13 @@ https://user-images.githubusercontent.com/442007/159130114-0ab9cf50-e026-4b5c-b3
 
 # Usage
 
-There are two main ways to use SwiftHUD. You can opt for the basic SwiftUI approach if all you need is one simple HUD, or a mixed approach if you need more control and flexibility.
+There are two ways to use `SwiftHUD`. You can opt for the basic SwiftUI approach if all you need is one simple HUD, or a mixed approach if you need more control and flexibility.
+
+But first, you have to add the Package Dependency.
+
+## Adding the Package Dependency
+
+In the Xcode, select File > Add packages. In the top right box labeled `Search or Enter Package URL`, paste the following URL: https://github.com/maciekish/SwiftHUD
 
 ## Basic, SwiftUI usage
 
