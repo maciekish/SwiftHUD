@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(iOS 15.0, macOS 10.15, *)
+@available(iOS 15.0, macOS 12.00, *)
 struct SwiftHUDOverlayModifier: ViewModifier {
     @Binding var isActive: Bool
     @Binding var overlay: SwiftHUD
@@ -41,8 +41,9 @@ struct SwiftHUDOverlayModifier: ViewModifier {
                                     image
                                 }
                                 if let message = overlay.message {
-                                    Text(message)
+                                    Text(message.trimmingCharacters(in: .whitespacesAndNewlines))
                                         .foregroundColor(.secondary)
+                                        .multilineTextAlignment(.center)
                                 }
                             }
                             .padding(10)
@@ -62,5 +63,31 @@ struct SwiftHUDOverlayModifier: ViewModifier {
         } else {
             content
         }
+    }
+}
+
+struct SwiftHUDOverlayModifier_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            List {
+                Section {
+                    Text("Lorem ipsum, dolor sit amet.")
+                } header: {
+                    Text("World")
+                }
+                .headerProminence(.increased)
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button {
+                        // Noop
+                    } label: {
+                        Text("Done")
+                    }
+                }
+            }
+            .navigationTitle("Hello, World!")
+        }
+        .swiftHUD(isActive: .constant(true), overlay: SwiftHUD(accessory: .progress, message: .constant("Loading...")))
     }
 }

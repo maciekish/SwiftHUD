@@ -12,7 +12,7 @@ import SwiftUI
  
  To present a singular HUD once from SwiftUI, you should probably just use the `.swiftHUD(...)` view modifier. The Manager is not necessary in this case.
  */
-@available(iOS 15.0, macOS 10.15, *)
+@available(iOS 15.0, macOS 12.00, *)
 public class SwiftHUDOverlayManager: ObservableObject {
     /** The shared manager can be used in situations where you need to display a `SwiftHUD` from a very remote location. Where possible, you should use a local manager. */
     public static var shared = SwiftHUDOverlayManager()

@@ -10,7 +10,7 @@ import SwiftUI
 /**
  An instance of a `SwiftHUD`. A `SwiftHUD` is a simple struct that contains data to construct an overlay view in the `SwiftHUDOverlayModifier` when required.
  */
-@available(iOS 15.0, macOS 10.15, *)
+@available(iOS 15.0, macOS 12.00, *)
 public struct SwiftHUD {
     /**
      Each `SwiftHUD` has an accessory. The accessory is displayed as the topmost item of the HUD view.
