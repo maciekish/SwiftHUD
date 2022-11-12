@@ -78,7 +78,7 @@ struct SwiftHUDOverlayModifier_Previews: PreviewProvider {
                 .headerProminence(.increased)
             }
             .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                ToolbarItemGroup(placement: .confirmationAction) {
                     Button {
                         // Noop
                     } label: {
