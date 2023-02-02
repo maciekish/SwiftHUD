@@ -49,6 +49,11 @@ public class SwiftHUDOverlayManager: ObservableObject {
                 }
             }
         }
+        
+        // If there is haptic feedback, trigger it.
+        if let hapticFeedback = overlay.hapticFeedback {
+            hapticFeedback.trigger()
+        }
     }
     
     /** Immediately dismisses the HUD */
@@ -66,7 +71,7 @@ struct SwiftHUDManagedOverlayModifier: ViewModifier {
         Group {
             if let overlay = manager.overlay {
                 content
-                    .swiftHUD(isActive: $isActive, overlay: overlay)
+                .swiftHUD(isActive: $isActive, overlay: overlay)
             } else {
                 content
             }

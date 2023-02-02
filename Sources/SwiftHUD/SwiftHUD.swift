@@ -19,13 +19,15 @@ public struct SwiftHUD {
              /** `progress` displays an animated `ProgressView` as the accessory. */
         case progress,
              /** `systemImage` displays an SF Symbol` as the accessory. */
-             systemImage(name: String),
+             systemImage(name: String, scale: Image.Scale = .medium),
              /** `image` displays an arbitrary image as the accessory. */
              image(image: Image)
     }
     
     /** Defines the accessory of this `SwiftHUD` */
     var accessory: Accessory
+    /** Defines the Haptic Feedback of this `SwiftHUD `*/
+    var hapticFeedback: HapticFeedback?
     /** An optional message, displayed below the accessory. Being a binding, it can be updated remotely, or you can replace the whole `SwiftHUD` by simply displaying a new one */
     @Binding var message: String?
     /** Controls whether the overlay disableds the content behind it. If true, the content will be `.disabled` and slightly dimmed. */
@@ -48,14 +50,16 @@ public struct SwiftHUD {
      - Parameter disablesBackground: If set to `true` will `.disable` the views behind the HUD, and apply a slight dimming effect.
      - Parameter tapToDismiss: If set to `true`, the HUD can be dismissed by tapping it, or the backgorund.
      - Parameter dismissAfter: Optional TimeInterval that controls automatic dismissal.
+     - Parameter hapticFeedback: Feedback to trigger on display.
      - Parameter closure: Optional closure that is executed immediately. Dismisses the HUD automatically on completion.
      */
-    public init(accessory: Accessory, message: String? = nil, disablesBackground: Bool = true, tapToDismiss: Bool = false, dismissAfter: TimeInterval? = nil, closure: (() -> Void)? = nil) {
+    public init(accessory: Accessory, message: String? = nil, disablesBackground: Bool = true, tapToDismiss: Bool = false, dismissAfter: TimeInterval? = nil, hapticFeedback: HapticFeedback? = .notification(type: .success), closure: (() -> Void)? = nil) {
         self.accessory = accessory
         self._message = .constant(message)
         self.disablesBackground = disablesBackground
         self.tapToDismiss = tapToDismiss
         self.dismissAfter = dismissAfter
+        self.hapticFeedback = hapticFeedback
         self.closure = closure
     }
     
@@ -66,15 +70,17 @@ public struct SwiftHUD {
      - Parameter message: Optional message that is displayed below the accessory.
      - Parameter disablesBackground: If set to `true` will `.disable` the views behind the HUD, and apply a slight dimming effect.
      - Parameter tapToDismiss: If set to `true`, the HUD can be dismissed by tapping it, or the backgorund.
+     - Parameter hapticFeedback: Feedback to trigger on display.
      - Parameter dismissAfter: Optional TimeInterval that controls automatic dismissal.
      - Parameter closure: Optional closure that is executed immediately. Dismisses the HUD automatically on completion.
      */
-    public init(accessory: Accessory, message: (Binding<String?>)? = nil, disablesBackground: Bool = true, tapToDismiss: Bool = false, dismissAfter: TimeInterval? = nil, closure: (() -> Void)? = nil) {
+    public init(accessory: Accessory, message: (Binding<String?>)? = nil, disablesBackground: Bool = true, tapToDismiss: Bool = false, dismissAfter: TimeInterval? = nil, hapticFeedback: HapticFeedback? = .notification(type: .success), closure: (() -> Void)? = nil) {
         self.accessory = accessory
         self._message = message ?? .constant(nil)
         self.disablesBackground = disablesBackground
         self.tapToDismiss = tapToDismiss
         self.dismissAfter = dismissAfter
+        self.hapticFeedback = hapticFeedback
         self.closure = closure
     }
 }

@@ -35,8 +35,9 @@ struct SwiftHUDOverlayModifier: ViewModifier {
                                 switch overlay.accessory {
                                 case .progress:
                                     ProgressView()
-                                case .systemImage(let name):
+                                case .systemImage(let name, let scale):
                                     Image(systemName: name)
+                                    .imageScale(scale)
                                 case .image(let image):
                                     image
                                 }
