@@ -9,8 +9,37 @@ import SwiftUI
 
 @available(iOS 15.0, macOS 12.00, *)
 struct SwiftHUDOverlayModifier: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
     @Binding var isActive: Bool
     @Binding var overlay: SwiftHUD
+    
+    private let cornerRadius: CGFloat = 32
+    
+    private var glassShape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+    }
+    
+    private var glassBorderGradient: LinearGradient {
+        LinearGradient(
+            colors: [
+                Color.white.opacity(colorScheme == .dark ? 0.45 : 0.6),
+                Color.white.opacity(colorScheme == .dark ? 0.12 : 0.2)
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+    
+    private var glassHighlightGradient: LinearGradient {
+        LinearGradient(
+            colors: [
+                Color.white.opacity(colorScheme == .dark ? 0.32 : 0.45),
+                Color.white.opacity(0.08)
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
     
     init(isActive: Binding<Bool>, overlay: Binding<SwiftHUD>) {
         self._isActive = isActive
@@ -30,26 +59,46 @@ struct SwiftHUDOverlayModifier: ViewModifier {
                                 .foregroundColor(.black)
                                 .opacity(0.33)
                         }
-                        GroupBox {
-                            VStack(spacing: 10) {
-                                switch overlay.accessory {
-                                case .progress:
-                                    ProgressView()
-                                case .systemImage(let name, let scale):
-                                    Image(systemName: name)
+                        VStack(spacing: 16) {
+                            switch overlay.accessory {
+                            case .progress:
+                                ProgressView()
+                                    .tint(.primary)
+                            case .systemImage(let name, let scale):
+                                Image(systemName: name)
                                     .imageScale(scale)
-                                case .image(let image):
-                                    image
-                                }
-                                if let message = overlay.message {
-                                    Text(message.trimmingCharacters(in: .whitespacesAndNewlines))
-                                        .foregroundColor(.secondary)
-                                        .multilineTextAlignment(.center)
-                                }
+                            case .image(let image):
+                                image
                             }
-                            .padding(10)
+                            if let message = overlay.message {
+                                Text(message.trimmingCharacters(in: .whitespacesAndNewlines))
+                                    .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.center)
+                            }
                         }
-                        .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 0)
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 24)
+                        .background(glassShape.fill(.ultraThinMaterial))
+                        .overlay(
+                            glassShape
+                                .fill(glassHighlightGradient)
+                                .opacity(0.45)
+                                .blur(radius: 18)
+                                .mask(glassShape)
+                                .allowsHitTesting(false)
+                        )
+                        .overlay(
+                            glassShape
+                                .strokeBorder(glassBorderGradient, lineWidth: 1)
+                                .blendMode(.softLight)
+                        )
+                        .shadow(
+                            color: Color.black.opacity(colorScheme == .dark ? 0.45 : 0.22),
+                            radius: 28,
+                            x: 0,
+                            y: 16
+                        )
+                        .compositingGroup()
                     }
                     // Cover content view entirely
                     .ignoresSafeArea()
